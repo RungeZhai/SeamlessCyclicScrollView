@@ -1,2 +1,3 @@
 SeamlessCyclicScrollView
 ========================
+First time use github to create a repository. There is noting in it yet...
