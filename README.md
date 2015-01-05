@@ -1,3 +1,3 @@
 SeamlessCyclicScrollView
 ========================
-First time use github to create a repository. There is noting in it yet...
+Infinitely Cyclic Scrolling Gallery With a UICollectionView
