@@ -13,7 +13,7 @@
 
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *collectionViewFlowLayout;
 
-@property (strong, nonatomic) NSArray *imageNames;// data source
+@property (strong, nonatomic) NSArray *dataSource;// data source
 
 @property (strong, nonatomic) NSIndexPath *indexPathForDeviceOrientation;// for move to the right position after orientation
 
@@ -26,20 +26,17 @@ static NSString * const reuseIdentifier = @"SCSVReusableID";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Register cell classes
-    [self.collectionView registerNib:[UINib nibWithNibName:@"SCSVCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:reuseIdentifier];
-    
     // data source
-    _imageNames = @[@"image1.jpg", @"image2.jpg", @"image3.jpg", @"image4.jpg"];
+    _dataSource = @[@1, @2, @3];
     
     // duplicate the last item and put it at first
     // duplicate the first item and put it at last
-    id firstItem = [_imageNames firstObject];
-    id lastItem = [_imageNames lastObject];
-    NSMutableArray *workingArray = [_imageNames mutableCopy];
+    id firstItem = [_dataSource firstObject];
+    id lastItem = [_dataSource lastObject];
+    NSMutableArray *workingArray = [_dataSource mutableCopy];
     [workingArray insertObject:lastItem atIndex:0];
     [workingArray addObject:firstItem];
-    _imageNames = [NSArray arrayWithArray:workingArray];
+    _dataSource = workingArray;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -85,13 +82,13 @@ static NSString * const reuseIdentifier = @"SCSVReusableID";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return _imageNames.count;
+    return _dataSource.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     SCSVCollectionViewCell *cell = (SCSVCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     
-    cell.imageView.image = [UIImage imageNamed:_imageNames[indexPath.item]];
+    cell.label.text = [@"Page " stringByAppendingString:[_dataSource[indexPath.item] stringValue]];
     
     return cell;
 }
@@ -113,14 +110,14 @@ static NSString * const reuseIdentifier = @"SCSVReusableID";
     CGFloat currentOffsetY = scrollView.contentOffset.y;
     
     CGFloat pageWidth = scrollView.frame.size.width;
-    CGFloat offset = pageWidth * (_imageNames.count - 2);
+    CGFloat offset = pageWidth * (_dataSource.count - 2);
     
-    // the first page(showing the last item) is visible and user is still scrolling to the left
+    // the first page(showing the last item) is visible and user's finger is still scrolling to the right
     if (currentOffsetX < pageWidth && lastContentOffsetX > currentOffsetX) {
         lastContentOffsetX = currentOffsetX + offset;
         scrollView.contentOffset = (CGPoint){lastContentOffsetX, currentOffsetY};
     }
-    // the last page (showing the first item) is visible and the user is still scrolling to the right
+    // the last page (showing the first item) is visible and the user's finger is still scrolling to the left
     else if (currentOffsetX > offset && lastContentOffsetX < currentOffsetX) {
         lastContentOffsetX = currentOffsetX - offset;
         scrollView.contentOffset = (CGPoint){lastContentOffsetX, currentOffsetY};
